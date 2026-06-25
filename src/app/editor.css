@@ -1,0 +1,404 @@
+/* ============================================================
+   MindVault — Premium Editor & Reading Prose Styles
+   v2.0 — Craft / Notion-level document rendering
+   ============================================================ */
+
+/* ─── Reading Progress Bar ────────────────────────────────────── */
+.mv-reading-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, hsl(250 95% 62%), hsl(190 90% 50%));
+  border-radius: 0 2px 2px 0;
+  z-index: 20;
+  transition: width 0.1s ease-out;
+  pointer-events: none;
+}
+
+/* ─── Base Prose Canvas ───────────────────────────────────────── */
+/* Applied to Tiptap canvas (.ProseMirror) AND the mv-prose reading view */
+.ProseMirror,
+.mv-prose {
+  max-width: 760px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  font-size: 17px !important;
+  line-height: 1.85 !important;
+  letter-spacing: 0.012em;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "kern" 1, "liga" 1;
+  color: inherit;
+}
+
+/* ─── Headings ────────────────────────────────────────────────── */
+.ProseMirror h1,
+.mv-prose h1 {
+  font-size: 2.1rem !important;
+  font-weight: 800 !important;
+  line-height: 1.18 !important;
+  letter-spacing: -0.03em !important;
+  margin-top: 3.25rem !important;
+  margin-bottom: 0.85rem !important;
+  padding-bottom: 0.6rem !important;
+  border-bottom: 2px solid var(--border) !important;
+}
+
+.ProseMirror h2,
+.mv-prose h2 {
+  font-size: 1.55rem !important;
+  font-weight: 700 !important;
+  line-height: 1.28 !important;
+  letter-spacing: -0.018em !important;
+  margin-top: 2.75rem !important;
+  margin-bottom: 0.7rem !important;
+}
+
+.ProseMirror h3,
+.mv-prose h3 {
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  line-height: 1.38 !important;
+  letter-spacing: -0.008em !important;
+  margin-top: 2rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Remove top margin from the very first element */
+.ProseMirror > :first-child,
+.mv-prose > :first-child {
+  margin-top: 0 !important;
+}
+
+/* ─── Paragraphs ──────────────────────────────────────────────── */
+.ProseMirror p,
+.mv-prose p {
+  margin-top: 0 !important;
+  margin-bottom: 1.45em !important;
+  line-height: 1.85 !important;
+}
+
+.ProseMirror p:last-child,
+.mv-prose p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* ─── Lists ───────────────────────────────────────────────────── */
+.ProseMirror ul,
+.ProseMirror ol,
+.mv-prose ul,
+.mv-prose ol {
+  padding-left: 1.75rem !important;
+  margin-top: 0.85rem !important;
+  margin-bottom: 1.45rem !important;
+}
+
+.ProseMirror li,
+.mv-prose li {
+  margin-bottom: 0.5em !important;
+  padding-left: 0.25rem !important;
+  line-height: 1.8 !important;
+}
+
+.ProseMirror li > p,
+.mv-prose li > p {
+  margin-bottom: 0.3em !important;
+}
+
+/* Nested lists */
+.ProseMirror li > ul,
+.ProseMirror li > ol,
+.mv-prose li > ul,
+.mv-prose li > ol {
+  margin-top: 0.4em !important;
+  margin-bottom: 0.4em !important;
+}
+
+/* Bullet markers */
+.ProseMirror ul > li::marker,
+.mv-prose ul > li::marker {
+  color: var(--primary);
+}
+
+.ProseMirror ol > li::marker,
+.mv-prose ol > li::marker {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.88em;
+}
+
+/* ─── Blockquotes ─────────────────────────────────────────────── */
+.ProseMirror blockquote,
+.mv-prose blockquote {
+  border-left: 3.5px solid var(--primary) !important;
+  padding: 0.9rem 1.25rem !important;
+  margin: 1.85rem 0 !important;
+  border-radius: 0 0.625rem 0.625rem 0 !important;
+  font-style: italic !important;
+  font-size: 1.04rem !important;
+  line-height: 1.82 !important;
+}
+
+:root .ProseMirror blockquote,
+:root .mv-prose blockquote {
+  background: rgba(0, 0, 0, 0.025) !important;
+}
+
+.dark .ProseMirror blockquote,
+.dark .mv-prose blockquote {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.ProseMirror blockquote p,
+.mv-prose blockquote p {
+  margin: 0 !important;
+  color: var(--muted-foreground) !important;
+}
+
+/* ─── Tables ──────────────────────────────────────────────────── */
+.ProseMirror table,
+.mv-prose table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 2rem 0 !important;
+  overflow: hidden !important;
+  font-size: 0.9rem !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 0.75rem !important;
+  table-layout: auto !important;
+}
+
+.ProseMirror thead,
+.mv-prose thead {
+  background: var(--muted) !important;
+}
+
+.ProseMirror th,
+.mv-prose th {
+  padding: 0.7rem 1rem !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1.5px solid var(--border) !important;
+  color: var(--muted-foreground) !important;
+  background: var(--muted) !important;
+}
+
+.ProseMirror td,
+.mv-prose td {
+  padding: 0.65rem 1rem !important;
+  border-bottom: 1px solid var(--border) !important;
+  border-right: 1px solid var(--border) !important;
+  vertical-align: top !important;
+}
+
+.ProseMirror td:last-child,
+.mv-prose td:last-child {
+  border-right: none !important;
+}
+
+.ProseMirror th:last-child,
+.mv-prose th:last-child {
+  border-right: none !important;
+}
+
+.ProseMirror tr:last-child td,
+.mv-prose tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Zebra striping */
+:root .ProseMirror tbody tr:nth-child(even) td,
+:root .mv-prose tbody tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+.dark .ProseMirror tbody tr:nth-child(even) td,
+.dark .mv-prose tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Row hover */
+.ProseMirror tbody tr:hover td,
+.mv-prose tbody tr:hover td {
+  background: rgba(99, 102, 241, 0.04) !important;
+  transition: background 0.15s !important;
+}
+
+/* ─── Inline Code ─────────────────────────────────────────────── */
+.ProseMirror :not(pre) > code,
+.mv-prose :not(pre) > code {
+  font-family: ui-monospace, "Fira Code", "Cascadia Code", Consolas, monospace !important;
+  font-size: 0.84em !important;
+  padding: 0.12em 0.42em !important;
+  border-radius: 0.3rem !important;
+  border: 1px solid var(--border) !important;
+  background: var(--muted) !important;
+  color: inherit !important;
+  font-variant-ligatures: none !important;
+  white-space: nowrap !important;
+}
+
+/* ─── Horizontal Rule ─────────────────────────────────────────── */
+.ProseMirror hr,
+.mv-prose hr {
+  border: none !important;
+  height: 1px !important;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--border) 25%,
+    var(--border) 75%,
+    transparent 100%
+  ) !important;
+  margin: 3rem 0 !important;
+}
+
+/* ─── Images ──────────────────────────────────────────────────── */
+.ProseMirror img,
+.mv-prose img {
+  max-width: 100% !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+  margin: 1.75rem auto !important;
+  display: block !important;
+  transition: box-shadow 0.25s ease, transform 0.25s ease !important;
+}
+
+.ProseMirror img:hover,
+.mv-prose img:hover {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14) !important;
+  cursor: zoom-in !important;
+}
+
+/* ─── Links ───────────────────────────────────────────────────── */
+.ProseMirror a,
+.mv-prose a {
+  color: var(--primary) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+  text-decoration-thickness: 1px !important;
+  transition: opacity 0.15s !important;
+}
+
+.ProseMirror a:hover,
+.mv-prose a:hover {
+  opacity: 0.75 !important;
+}
+
+/* ─── Strong / Em ─────────────────────────────────────────────── */
+.ProseMirror strong,
+.mv-prose strong {
+  font-weight: 700 !important;
+}
+
+.ProseMirror em,
+.mv-prose em {
+  font-style: italic !important;
+}
+
+/* ─── Placeholder ─────────────────────────────────────────────── */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder) !important;
+  float: left !important;
+  color: var(--muted-foreground) !important;
+  opacity: 0.45 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  white-space: pre-wrap !important;
+  font-size: 17px !important;
+  line-height: 1.85 !important;
+}
+
+/* ─── Note Reading View (Preview mode container) ──────────────── */
+.note-reading-view {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.note-reading-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 3rem 3rem 6rem;
+  scroll-behavior: smooth;
+}
+
+@media (max-width: 768px) {
+  .note-reading-scroll {
+    padding: 2rem 1.5rem 4rem;
+  }
+}
+
+/* Reading metadata strip */
+.note-reading-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  max-width: 760px;
+  margin: 0 auto 2.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+
+.note-reading-meta-dot {
+  opacity: 0.35;
+  font-size: 0.65rem;
+}
+
+.note-reading-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  letter-spacing: 0.02em;
+}
+
+/* ─── Callout Blocks ──────────────────────────────────────────── */
+.mv-callout {
+  margin: 1.75rem 0 !important;
+  padding: 0.9rem 1.15rem !important;
+  border-radius: 0 0.625rem 0.625rem 0 !important;
+}
+
+.mv-callout-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+}
+
+.mv-callout-body {
+  font-size: 0.93rem;
+  line-height: 1.75;
+}
+
+.mv-callout-body > p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* ─── Focus Mode: slightly more breathing room ────────────────── */
+.focus-mode-editor .ProseMirror {
+  padding-bottom: 5rem !important;
+}
+
+/* ─── Selection styling ───────────────────────────────────────── */
+.ProseMirror ::selection,
+.mv-prose ::selection {
+  background: hsl(250 95% 62% / 0.2);
+}
