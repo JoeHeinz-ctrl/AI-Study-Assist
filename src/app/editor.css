@@ -402,3 +402,19 @@
 .mv-prose ::selection {
   background: hsl(250 95% 62% / 0.2);
 }
+
+/* ─── Search and Replace Highlighting ─────────────────────────── */
+.ProseMirror .search-result,
+.mv-prose .search-result {
+  background: hsl(45 100% 70% / 0.6) !important;
+  border-radius: 0.25rem !important;
+  border: 1px solid hsl(45 100% 60% / 0.3) !important;
+  padding: 0 0.125rem !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .ProseMirror .search-result,
+.dark .mv-prose .search-result {
+  background: hsl(45 80% 25% / 0.4) !important;
+  border: 1px solid hsl(45 60% 40% / 0.5) !important;
+}

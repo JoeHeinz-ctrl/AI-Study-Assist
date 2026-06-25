@@ -16,7 +16,6 @@ import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import Placeholder from '@tiptap/extension-placeholder';
 import { Markdown } from 'tiptap-markdown';
-import { SearchAndReplace } from '@sereneinserenade/tiptap-search-and-replace';
 
 // UI components
 import { Input } from '@/components/ui/input';
@@ -36,6 +35,7 @@ import CustomBlockquote from './extensions/CustomBlockquote';
 import CustomCodeBlock from './extensions/CustomCodeBlock';
 import CustomImage from './extensions/CustomImage';
 import SlashSuggestion from './extensions/SlashSuggestion';
+import { SearchAndReplace } from './extensions/SearchAndReplace';
 
 // Icons
 import {
@@ -435,6 +435,31 @@ export function NoteEditor({ initialData }: NoteProps) {
     editor.commands.scrollIntoView();
   };
 
+  // Find & Replace Controls Handlers
+  const handleNext = useCallback(() => {
+    if (editor) {
+      editor.commands.nextSearchResult();
+    }
+  }, [editor]);
+  
+  const handlePrev = useCallback(() => {
+    if (editor) {
+      editor.commands.previousSearchResult();
+    }
+  }, [editor]);
+  
+  const handleReplace = useCallback(() => {
+    if (!editor) return;
+    editor.commands.setReplaceTerm(replaceText);
+    editor.commands.replace();
+  }, [editor, replaceText]);
+  
+  const handleReplaceAll = useCallback(() => {
+    if (!editor) return;
+    editor.commands.setReplaceTerm(replaceText);
+    editor.commands.replaceAll();
+  }, [editor, replaceText]);
+
   // Find & Replace Search Sync Effect
   useEffect(() => {
     if (editor && showFindReplace) {
@@ -444,6 +469,68 @@ export function NoteEditor({ initialData }: NoteProps) {
       editor.commands.setSearchTerm('');
     }
   }, [findText, matchCase, showFindReplace, editor]);
+
+  // Global keyboard shortcuts for Find & Replace
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!editor) return;
+      
+      // Ctrl+F or Cmd+F - Open Find
+      if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+        event.preventDefault();
+        setShowFindReplace(true);
+        // Focus find input after a short delay to ensure the UI is rendered
+        setTimeout(() => {
+          const findInput = document.querySelector('[data-find-input]') as HTMLInputElement;
+          if (findInput) {
+            findInput.focus();
+            findInput.select();
+          }
+        }, 100);
+        return;
+      }
+      
+      // Ctrl+H or Cmd+H - Open Find & Replace
+      if ((event.ctrlKey || event.metaKey) && event.key === 'h') {
+        event.preventDefault();
+        setShowFindReplace(true);
+        // Focus find input after a short delay
+        setTimeout(() => {
+          const findInput = document.querySelector('[data-find-input]') as HTMLInputElement;
+          if (findInput) {
+            findInput.focus();
+            findInput.select();
+          }
+        }, 100);
+        return;
+      }
+      
+      // Escape - Close Find & Replace
+      if (event.key === 'Escape' && showFindReplace) {
+        event.preventDefault();
+        setShowFindReplace(false);
+        editor.commands.focus();
+        return;
+      }
+      
+      // F3 or Enter in find field - Next result
+      if (showFindReplace && event.key === 'F3') {
+        event.preventDefault();
+        handleNext();
+        return;
+      }
+      
+      // Shift+F3 - Previous result
+      if (showFindReplace && event.key === 'F3' && event.shiftKey) {
+        event.preventDefault();
+        handlePrev();
+        return;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [editor, showFindReplace, handleNext, handlePrev]);
 
   // Load content once when initialData loads or switches note ID
   useEffect(() => {
@@ -511,20 +598,6 @@ export function NoteEditor({ initialData }: NoteProps) {
   }, [editor, headings, viewMode]);
 
 
-
-  // Find & Replace Controls Handlers
-  const handleNext = () => editor?.commands.nextSearchResult();
-  const handlePrev = () => editor?.commands.previousSearchResult();
-  const handleReplace = () => {
-    if (!editor) return;
-    editor.commands.setReplaceTerm(replaceText);
-    editor.commands.replace();
-  };
-  const handleReplaceAll = () => {
-    if (!editor) return;
-    editor.commands.setReplaceTerm(replaceText);
-    editor.commands.replaceAll();
-  };
 
   // Word statistics calculations
   const textContent = editor ? editor.getText() : '';
@@ -868,10 +941,20 @@ export function NoteEditor({ initialData }: NoteProps) {
           <div className="bg-muted/40 dark:bg-zinc-900/40 backdrop-blur-sm border-t px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs select-none border-b">
             <div className="flex items-center gap-1 bg-background border rounded-lg px-2 py-1 flex-1 min-w-[150px]">
               <input
+                data-find-input
                 type="text"
                 placeholder="Find..."
                 value={findText}
                 onChange={(e) => setFindText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleNext();
+                  } else if (e.key === 'Enter' && e.shiftKey) {
+                    e.preventDefault();
+                    handlePrev();
+                  }
+                }}
                 className="w-full bg-transparent focus:outline-none border-none py-0.5"
               />
               {findText && (
@@ -883,10 +966,17 @@ export function NoteEditor({ initialData }: NoteProps) {
 
             <div className="flex items-center gap-1 bg-background border rounded-lg px-2 py-1 flex-1 min-w-[150px]">
               <input
+                data-replace-input
                 type="text"
                 placeholder="Replace..."
                 value={replaceText}
                 onChange={(e) => setReplaceText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleReplace();
+                  }
+                }}
                 className="w-full bg-transparent focus:outline-none border-none py-0.5"
               />
               {replaceText && (
