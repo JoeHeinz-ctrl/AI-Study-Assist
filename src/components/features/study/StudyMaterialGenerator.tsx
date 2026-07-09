@@ -171,17 +171,17 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Study Type Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+      <Card className="touch-manipulation">
+        <CardHeader className="mobile-card-spacing pb-3 sm:pb-6">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             Select Study Material Type
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <CardContent className="mobile-card-spacing pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {studyTypes.map((type) => {
               const Icon = type.icon;
               const isSelected = selectedStudyType === type.id;
@@ -189,19 +189,19 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
               return (
                 <Card 
                   key={type.id}
-                  className={`cursor-pointer transition-all ${
+                  className={`cursor-pointer transition-all touch-manipulation active:scale-95 ${
                     isSelected 
                       ? 'ring-2 ring-primary bg-primary/5' 
-                      : 'hover:bg-muted/50'
+                      : 'hover:bg-muted/50 active:bg-muted'
                   }`}
                   onClick={() => setSelectedStudyType(type.id)}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <Icon className={`h-5 w-5 mt-0.5 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
-                      <div>
-                        <h4 className="font-semibold text-sm">{type.name}</h4>
-                        <p className="text-xs text-muted-foreground mt-1">{type.description}</p>
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <Icon className={`h-4 w-4 sm:h-5 sm:w-5 mt-0.5 flex-shrink-0 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <div className="min-w-0">
+                        <h4 className="font-semibold text-xs sm:text-sm truncate">{type.name}</h4>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1 line-clamp-2">{type.description}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -213,15 +213,15 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
       </Card>
 
       {/* Study Mode Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-primary" />
+      <Card className="touch-manipulation">
+        <CardHeader className="mobile-card-spacing pb-3 sm:pb-6">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             Select Difficulty Level
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <CardContent className="mobile-card-spacing pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
             {studyModes.map((mode) => {
               const Icon = mode.icon;
               const isSelected = selectedStudyMode === mode.id;
@@ -229,19 +229,19 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
               return (
                 <Card 
                   key={mode.id}
-                  className={`cursor-pointer transition-all ${
+                  className={`cursor-pointer transition-all touch-manipulation active:scale-95 ${
                     isSelected 
                       ? 'ring-2 ring-primary bg-primary/5' 
-                      : 'hover:bg-muted/50'
+                      : 'hover:bg-muted/50 active:bg-muted'
                   }`}
                   onClick={() => setSelectedStudyMode(mode.id)}
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <Icon className={`h-5 w-5 mt-0.5 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
-                      <div>
-                        <h4 className="font-semibold text-sm">{mode.name}</h4>
-                        <p className="text-xs text-muted-foreground mt-1">{mode.description}</p>
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="flex items-start gap-2 sm:gap-3">
+                      <Icon className={`h-4 w-4 sm:h-5 sm:w-5 mt-0.5 flex-shrink-0 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <div className="min-w-0">
+                        <h4 className="font-semibold text-xs sm:text-sm truncate">{mode.name}</h4>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1 line-clamp-2">{mode.description}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -253,31 +253,31 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
       </Card>
 
       {/* Source Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Select Source Materials</CardTitle>
+      <Card className="touch-manipulation">
+        <CardHeader className="mobile-card-spacing pb-3 sm:pb-6">
+          <CardTitle className="text-base sm:text-lg">Select Source Materials</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="mobile-card-spacing pt-0">
           {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin" />
-              <span className="ml-2">Loading materials...</span>
+            <div className="flex items-center justify-center py-6 sm:py-8">
+              <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin" />
+              <span className="ml-2 text-xs sm:text-sm">Loading materials...</span>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {/* Selected sources */}
               {selectedSources.length > 0 && (
                 <div>
-                  <Label className="text-sm font-medium">Selected ({selectedSources.length})</Label>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                  <Label className="text-xs sm:text-sm font-medium">Selected ({selectedSources.length})</Label>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
                     {selectedSources.map((source) => (
-                      <Badge key={`${source.type}-${source.id}`} variant="default" className="flex items-center gap-1">
+                      <Badge key={`${source.type}-${source.id}`} variant="default" className="flex items-center gap-1 text-[10px] sm:text-xs py-1 px-2 touch-target">
                         {source.type === 'note' ? <BookOpen className="h-3 w-3" /> : <FileQuestion className="h-3 w-3" />}
-                        {source.title}
+                        <span className="max-w-[120px] sm:max-w-none truncate">{source.title}</span>
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-auto p-0 ml-1"
+                          className="h-auto p-0 ml-0.5 sm:ml-1 touch-target"
                           onClick={() => handleSourceToggle(source)}
                         >
                           <X className="h-3 w-3" />
@@ -289,23 +289,23 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
               )}
 
               {/* Available sources */}
-              <div className="max-h-60 overflow-y-auto space-y-2">
+              <div className="max-h-48 sm:max-h-60 overflow-y-auto mobile-scroll space-y-1.5 sm:space-y-2 pr-1">
                 {allSources.map((source) => {
                   const isSelected = selectedSources.some(s => s.id === source.id && s.type === source.type);
                   return (
                     <div 
                       key={`${source.type}-${source.id}`}
-                      className="flex items-center space-x-2 p-2 rounded hover:bg-muted/50 cursor-pointer"
+                      className="flex items-center space-x-2 p-2 sm:p-2.5 rounded hover:bg-muted/50 active:bg-muted cursor-pointer touch-manipulation transition-colors"
                       onClick={() => handleSourceToggle(source)}
                     >
-                      <Checkbox checked={isSelected} disabled />
+                      <Checkbox checked={isSelected} disabled className="flex-shrink-0" />
                       {source.type === 'note' ? (
-                        <BookOpen className="h-4 w-4 text-blue-500" />
+                        <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-500 flex-shrink-0" />
                       ) : (
-                        <FileQuestion className="h-4 w-4 text-green-500" />
+                        <FileQuestion className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
                       )}
-                      <span className="text-sm flex-1">{source.title}</span>
-                      <Badge variant="outline" className="text-xs">
+                      <span className="text-xs sm:text-sm flex-1 truncate">{source.title}</span>
+                      <Badge variant="outline" className="text-[10px] sm:text-xs flex-shrink-0">
                         {source.type}
                       </Badge>
                     </div>
@@ -318,24 +318,25 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
       </Card>
 
       {/* Study Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Study Settings</CardTitle>
+      <Card className="touch-manipulation">
+        <CardHeader className="mobile-card-spacing pb-3 sm:pb-6">
+          <CardTitle className="text-base sm:text-lg">Study Settings</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="mobile-card-spacing pt-0 space-y-3 sm:space-y-4">
           <div>
-            <Label htmlFor="title">Study Session Title (Optional)</Label>
+            <Label htmlFor="title" className="text-xs sm:text-sm">Study Session Title (Optional)</Label>
             <Input
               id="title"
               value={studyTitle}
               onChange={(e) => setStudyTitle(e.target.value)}
-              placeholder="Enter a custom title for this study session"
+              placeholder="Enter a custom title..."
+              className="mt-1.5 text-sm touch-target"
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <Label htmlFor="questions">Number of Questions</Label>
+              <Label htmlFor="questions" className="text-xs sm:text-sm">Number of Questions</Label>
               <Input
                 id="questions"
                 type="number"
@@ -344,11 +345,12 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
                 value={settings.numberOfQuestions || ''}
                 onChange={(e) => setSettings(prev => ({ ...prev, numberOfQuestions: e.target.value ? parseInt(e.target.value) : undefined }))}
                 placeholder="Auto"
+                className="mt-1.5 text-sm touch-target"
               />
             </div>
 
             <div>
-              <Label htmlFor="timeLimit">Time Limit (minutes per question)</Label>
+              <Label htmlFor="timeLimit" className="text-xs sm:text-sm">Time Limit (min/question)</Label>
               <Input
                 id="timeLimit"
                 type="number"
@@ -358,53 +360,57 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
                 value={settings.timeLimitPerQuestion || ''}
                 onChange={(e) => setSettings(prev => ({ ...prev, timeLimitPerQuestion: e.target.value ? parseFloat(e.target.value) : undefined }))}
                 placeholder="No limit"
+                className="mt-1.5 text-sm touch-target"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
+          <div className="space-y-2.5 sm:space-y-2">
+            <div className="flex items-center space-x-2 touch-target">
               <Checkbox
                 id="showAnswers"
                 checked={settings.showAnswersImmediately}
                 onCheckedChange={(checked) => setSettings(prev => ({ ...prev, showAnswersImmediately: Boolean(checked) }))}
+                className="touch-target"
               />
-              <Label htmlFor="showAnswers">Show answers immediately</Label>
+              <Label htmlFor="showAnswers" className="text-xs sm:text-sm cursor-pointer">Show answers immediately</Label>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 touch-target">
               <Checkbox
                 id="shuffle"
                 checked={settings.shuffleQuestions}
                 onCheckedChange={(checked) => setSettings(prev => ({ ...prev, shuffleQuestions: Boolean(checked) }))}
+                className="touch-target"
               />
-              <Label htmlFor="shuffle">Shuffle questions</Label>
+              <Label htmlFor="shuffle" className="text-xs sm:text-sm cursor-pointer">Shuffle questions</Label>
             </div>
           </div>
 
           {/* Focus Areas */}
           <div>
-            <Label>Focus Areas (Optional)</Label>
-            <div className="flex gap-2 mt-2">
+            <Label className="text-xs sm:text-sm">Focus Areas (Optional)</Label>
+            <div className="flex gap-2 mt-1.5 sm:mt-2">
               <Input
                 value={newFocusArea}
                 onChange={(e) => setNewFocusArea(e.target.value)}
                 placeholder="Add a topic to focus on..."
+                className="text-sm touch-target"
                 onKeyPress={(e) => e.key === 'Enter' && addFocusArea()}
               />
-              <Button type="button" onClick={addFocusArea} size="sm">
+              <Button type="button" onClick={addFocusArea} size="sm" className="touch-target flex-shrink-0">
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
             {focusAreas.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2">
                 {focusAreas.map((area) => (
-                  <Badge key={area} variant="secondary" className="flex items-center gap-1">
-                    {area}
+                  <Badge key={area} variant="secondary" className="flex items-center gap-1 text-[10px] sm:text-xs py-1 px-2">
+                    <span className="max-w-[150px] sm:max-w-none truncate">{area}</span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-auto p-0 ml-1"
+                      className="h-auto p-0 ml-0.5 sm:ml-1 touch-target"
                       onClick={() => removeFocusArea(area)}
                     >
                       <X className="h-3 w-3" />
@@ -418,12 +424,12 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
       </Card>
 
       {/* Generate Button */}
-      <div className="flex justify-center">
+      <div className="flex justify-center pb-4 sm:pb-0">
         <Button 
           onClick={handleGenerate}
           disabled={!selectedStudyType || !selectedStudyMode || selectedSources.length === 0 || generateMutation.isPending}
           size="lg"
-          className="px-8"
+          className="px-6 sm:px-8 w-full sm:w-auto touch-target text-sm sm:text-base"
         >
           {generateMutation.isPending ? (
             <>

@@ -237,41 +237,43 @@ export function FileUpload({
   });
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardContent className="p-6">
+    <div className="space-y-3 sm:space-y-4">
+      <Card className="touch-manipulation">
+        <CardContent className="mobile-card-spacing">
           <div
             {...getRootProps()}
             className={`
-              border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors
+              border-2 border-dashed rounded-lg p-6 sm:p-8 text-center cursor-pointer transition-colors
               ${isDragActive 
                 ? 'border-primary bg-primary/5' 
-                : 'border-muted-foreground/25 hover:border-primary/50'
+                : 'border-muted-foreground/25 hover:border-primary/50 active:border-primary active:bg-primary/5'
               }
               ${isUploading ? 'cursor-not-allowed opacity-50' : ''}
             `}
           >
             <input {...getInputProps()} ref={fileInputRef} />
             
-            <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+            <Upload className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-3 sm:mb-4 text-muted-foreground" />
             
-            <h3 className="text-lg font-semibold mb-2">
+            <h3 className="text-base sm:text-lg font-semibold mb-2">
               {isDragActive ? 'Drop files here' : 'Upload Study Materials'}
             </h3>
             
-            <p className="text-muted-foreground mb-4">
-              Drag & drop files here, or click to select files
+            <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
+              {isDragActive ? 'Release to upload' : 'Drag & drop files here, or tap to select'}
             </p>
             
-            <p className="text-sm text-muted-foreground">
-              Supports: {accept.map(type => type.toUpperCase()).join(', ')} • Max {maxSize}MB per file • Up to {maxFiles} files
+            <p className="text-[10px] sm:text-sm text-muted-foreground">
+              <span className="hidden sm:inline">Supports: {accept.map(type => type.toUpperCase()).join(', ')} • Max {maxSize}MB • Up to {maxFiles} files</span>
+              <span className="sm:hidden">{accept.map(type => type.toUpperCase()).join(', ')} • Max {maxSize}MB</span>
             </p>
             
             {!isDragActive && (
               <Button 
                 variant="outline" 
-                className="mt-4"
+                className="mt-3 sm:mt-4 touch-target"
                 disabled={isUploading}
+                size="sm"
               >
                 Select Files
               </Button>
@@ -281,27 +283,27 @@ export function FileUpload({
       </Card>
 
       {uploadedFiles.length > 0 && (
-        <Card>
-          <CardContent className="p-4">
-            <h4 className="font-semibold mb-3">Uploaded Files</h4>
-            <div className="space-y-3">
+        <Card className="touch-manipulation">
+          <CardContent className="p-3 sm:p-4">
+            <h4 className="text-sm sm:text-base font-semibold mb-2 sm:mb-3">Uploaded Files</h4>
+            <div className="space-y-2 sm:space-y-3 max-h-[400px] overflow-y-auto mobile-scroll">
               {uploadedFiles.map((file) => (
-                <div key={file.id} className="flex items-center space-x-3 p-3 bg-muted/30 rounded-lg">
+                <div key={file.id} className="flex items-center space-x-2 sm:space-x-3 p-2.5 sm:p-3 bg-muted/30 rounded-lg touch-manipulation active:bg-muted/50 transition-colors">
                   <div className="flex-shrink-0">
                     {getFileIcon(file.type)}
                   </div>
                   
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">
+                    <p className="text-xs sm:text-sm font-medium truncate">
                       {file.name}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">
                       {(file.size / 1024 / 1024).toFixed(1)} MB
                     </p>
                     
                     {file.status === 'uploading' || file.status === 'processing' ? (
                       <div className="mt-1">
-                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                        <div className="flex items-center justify-between text-[10px] sm:text-xs text-muted-foreground mb-1">
                           <span>
                             {file.status === 'uploading' ? 'Uploading...' : 'Processing...'}
                           </span>
@@ -310,21 +312,22 @@ export function FileUpload({
                         <Progress value={file.progress} className="h-1" />
                       </div>
                     ) : file.status === 'error' ? (
-                      <p className="text-xs text-red-500 mt-1">{file.error}</p>
+                      <p className="text-[10px] sm:text-xs text-red-500 mt-1 line-clamp-1">{file.error}</p>
                     ) : (
-                      <p className="text-xs text-green-600 mt-1">Ready for study</p>
+                      <p className="text-[10px] sm:text-xs text-green-600 mt-1">Ready for study</p>
                     )}
                   </div>
                   
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
                     {getStatusIcon(file.status)}
                     <Button
                       variant="ghost"
                       size="sm"
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0 touch-target"
                       onClick={() => removeFile(file.id)}
                       disabled={file.status === 'uploading' || file.status === 'processing'}
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </Button>
                   </div>
                 </div>

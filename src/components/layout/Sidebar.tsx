@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -11,9 +12,11 @@ import {
   PenTool, 
   BrainCircuit, 
   Bookmark,
-  FolderOpen
+  FolderOpen,
+  X
 } from 'lucide-react';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -25,16 +28,31 @@ const navItems = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function Sidebar({ open, onOpenChange }: SidebarProps) {
   const pathname = usePathname();
 
-  return (
-    <aside className="hidden w-64 flex-col border-r bg-background md:flex">
-      <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+  const sidebarContent = (
+    <>
+      <div className="flex h-14 items-center justify-between border-b px-4 lg:h-[60px] lg:px-6">
         <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
           <BrainCircuit className="h-6 w-6 text-primary" />
           <span className="text-lg">MindVault</span>
         </Link>
+        {onOpenChange && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden h-8 w-8"
+            onClick={() => onOpenChange(false)}
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        )}
       </div>
       <div className="flex-1 overflow-auto py-2">
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4 gap-1">
@@ -44,24 +62,51 @@ export function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => onOpenChange && onOpenChange(false)}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 transition-all hover:text-primary",
-                  isActive ? "bg-muted text-primary" : "text-muted-foreground"
+                  "flex items-center gap-3 rounded-lg px-3 py-3 md:py-2 transition-all hover:text-primary touch-manipulation",
+                  isActive ? "bg-muted text-primary font-medium" : "text-muted-foreground"
                 )}
               >
-                <item.icon className="h-4 w-4" />
-                {item.name}
+                <item.icon className="h-5 w-5 md:h-4 md:w-4" />
+                <span className="text-base md:text-sm">{item.name}</span>
               </Link>
             );
           })}
         </nav>
       </div>
       <div className="mt-auto p-4 border-t">
-        <Link href="/notes/new" className={cn(buttonVariants({ variant: 'outline' }), "w-full justify-start gap-2")}>
-          <PenTool className="h-4 w-4" />
+        <Link 
+          href="/notes/new" 
+          onClick={() => onOpenChange && onOpenChange(false)}
+          className={cn(
+            buttonVariants({ variant: 'default' }), 
+            "w-full justify-start gap-2 h-11 md:h-10 text-base md:text-sm touch-manipulation"
+          )}
+        >
+          <PenTool className="h-5 w-5 md:h-4 md:w-4" />
           New Note
         </Link>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex w-64 flex-col border-r bg-background">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Sidebar */}
+      {open !== undefined && onOpenChange && (
+        <Sheet open={open} onOpenChange={onOpenChange}>
+          <SheetContent side="left" className="w-[280px] sm:w-[320px] p-0 flex flex-col">
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+            {sidebarContent}
+          </SheetContent>
+        </Sheet>
+      )}
+    </>
   );
 }
