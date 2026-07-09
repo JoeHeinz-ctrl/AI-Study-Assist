@@ -1,30 +1,25 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { 
-  BookOpen, 
-  LayoutDashboard, 
-  Library, 
-  Settings, 
-  PenTool, 
-  BrainCircuit, 
-  Bookmark,
+  StickyNote,
   FolderOpen,
+  Bookmark,
+  MessageCircle,
+  Settings, 
+  PenTool,
   X
 } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 
 const navItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Notes', href: '/notes', icon: BookOpen },
+  { name: 'Notes', href: '/notes', icon: StickyNote },
   { name: 'Folders', href: '/folders', icon: FolderOpen },
   { name: 'Bookmarks', href: '/bookmarks', icon: Bookmark },
-  { name: 'AI Chat', href: '/chat', icon: BrainCircuit },
-  { name: 'Study', href: '/study', icon: Library },
+  { name: 'AI Chat', href: '/chat', icon: MessageCircle },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
@@ -39,15 +34,15 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
   const sidebarContent = (
     <>
       <div className="flex h-14 items-center justify-between border-b px-4 lg:h-[60px] lg:px-6">
-        <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-          <BrainCircuit className="h-6 w-6 text-primary" />
+        <Link href="/notes" className="flex items-center gap-2 font-semibold">
+          <StickyNote className="h-6 w-6 text-primary" />
           <span className="text-lg">MindVault</span>
         </Link>
         {onOpenChange && (
           <Button 
             variant="ghost" 
             size="icon" 
-            className="md:hidden h-8 w-8"
+            className="md:hidden h-8 w-8 touch-manipulation"
             onClick={() => onOpenChange(false)}
           >
             <X className="h-5 w-5" />

@@ -865,24 +865,24 @@ export function NoteEditor({ initialData }: NoteProps) {
       <div className="flex-1 flex flex-col h-full bg-background rounded-xl border border-border shadow-sm overflow-hidden min-w-0">
         
         {/* Header toolbar */}
-        <div className="flex flex-wrap justify-between items-center bg-card p-4 gap-3 shrink-0 select-none">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap justify-between items-start sm:items-center bg-card p-3 sm:p-4 gap-2 sm:gap-3 shrink-0 select-none">
           <Input 
             value={title} 
             onChange={(e) => {
               setTitle(e.target.value);
               setIsAutoTitle(false);
             }}
-            className="text-xl font-bold border-none shadow-none focus-visible:ring-0 px-0 h-auto flex-1 min-w-[200px]"
+            className="text-lg sm:text-xl font-bold border-none shadow-none focus-visible:ring-0 px-0 h-auto w-full sm:flex-1 sm:min-w-[200px]"
             placeholder="Note Title"
           />
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 w-full sm:w-auto flex-wrap">
             {/* View Mode controls */}
             <div className="flex items-center gap-0.5 bg-muted p-0.5 rounded-lg border">
               <Button 
                 variant={viewMode === 'edit' ? 'secondary' : 'ghost'} 
                 size="sm" 
-                className="h-7 text-xs px-2.5 rounded-md font-semibold" 
+                className="h-7 text-xs px-2 sm:px-2.5 rounded-md font-semibold" 
                 onClick={() => { setViewMode('edit'); editor?.setEditable(true); }}
               >
                 Edit
@@ -890,7 +890,7 @@ export function NoteEditor({ initialData }: NoteProps) {
               <Button 
                 variant={viewMode === 'preview' ? 'secondary' : 'ghost'} 
                 size="sm" 
-                className="h-7 text-xs px-2.5 rounded-md font-semibold" 
+                className="h-7 text-xs px-2 sm:px-2.5 rounded-md font-semibold" 
                 onClick={() => { setViewMode('preview'); editor?.setEditable(false); }}
               >
                 Preview
@@ -898,25 +898,29 @@ export function NoteEditor({ initialData }: NoteProps) {
               <Button 
                 variant={viewMode === 'split' ? 'secondary' : 'ghost'} 
                 size="sm" 
-                className="h-7 text-xs px-2.5 rounded-md font-semibold" 
+                className="h-7 text-xs px-2 sm:px-2.5 rounded-md font-semibold" 
                 onClick={() => { setViewMode('split'); editor?.setEditable(true); }}
               >
                 Split
               </Button>
             </div>
 
-            <Button variant="default" size="sm" className="gap-1.5 h-8 font-semibold rounded-lg" onClick={() => saveMutation.mutate(undefined)}>
-              <Save className="h-3.5 w-3.5" /> Save
+            <Button variant="default" size="sm" className="gap-1 sm:gap-1.5 h-8 font-semibold rounded-lg touch-manipulation" onClick={() => saveMutation.mutate(undefined)}>
+              <Save className="h-3.5 w-3.5" /> 
+              <span className="hidden xs:inline">Save</span>
             </Button>
             
             <Button 
               variant="secondary" 
               size="sm"
-              className="gap-1.5 h-8 font-semibold rounded-lg text-indigo-600 dark:text-indigo-400" 
+              className="gap-1 sm:gap-1.5 h-8 font-semibold rounded-lg text-indigo-600 dark:text-indigo-400 touch-manipulation" 
               onClick={() => enhanceMutation.mutate()}
               disabled={isEnhancing || !content}
+              title="AI Enhance"
             >
-              <BrainCircuit className="h-3.5 w-3.5" /> {isEnhancing ? 'Enhancing...' : 'AI Enhance'}
+              <BrainCircuit className="h-3.5 w-3.5" /> 
+              <span className="hidden sm:inline">{isEnhancing ? 'Enhancing...' : 'AI Enhance'}</span>
+              <span className="sm:hidden">{isEnhancing ? 'AI...' : 'AI'}</span>
             </Button>
 
             {/* Delete button — only shown for existing saved notes */}
@@ -924,7 +928,7 @@ export function NoteEditor({ initialData }: NoteProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="gap-1.5 h-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                className="gap-1 sm:gap-1.5 h-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 touch-manipulation"
                 onClick={handleDeleteNote}
                 disabled={deleteMutation.isPending}
                 title="Delete this note"
