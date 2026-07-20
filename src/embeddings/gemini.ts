@@ -51,6 +51,48 @@ export async function generateEmbedding(text: string): Promise<number[] | null> 
   }
 }
 
+/**
+ * Generates vector embeddings for an array of strings in a single batch request.
+ * Useful to avoid 429 rate limits on free Voyage AI accounts (3 RPM).
+ */
+export async function generateEmbeddingsBatch(texts: string[]): Promise<number[][] | null> {
+  if (texts.length === 0) return [];
+  
+  try {
+    const apiKey = getApiKey();
+
+    const response = await fetch(VOYAGE_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'voyage-3-lite',
+        input: texts,
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Voyage AI error ${response.status}: ${errText}`);
+    }
+
+    const data = await response.json();
+    
+    if (!data?.data || !Array.isArray(data.data)) {
+      throw new Error('No embeddings returned from Voyage AI');
+    }
+
+    // Sort by index just in case Voyage returns them out of order (though usually it doesn't)
+    const sortedData = data.data.sort((a: any, b: any) => a.index - b.index);
+    return sortedData.map((d: any) => d.embedding);
+  } catch (error) {
+    console.error('Batch embedding generation skipped:', error);
+    return null; // Graceful fallback
+  }
+}
+
 export function chunkText(text: string, chunkSize = 1000): string[] {
   const chunks: string[] = [];
   for (let i = 0; i < text.length; i += chunkSize) {

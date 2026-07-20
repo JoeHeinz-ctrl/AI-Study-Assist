@@ -5,7 +5,7 @@ export type StudyMode = 'beginner' | 'intermediate' | 'advanced' | 'exam_revisio
 
 export interface StudyMaterial {
   type: StudyType;
-  content: any;
+  content: Record<string, unknown>;
   metadata: {
     difficulty: StudyMode;
     estimatedTime: number;
@@ -211,7 +211,7 @@ export class StudyAIService {
     }
   }
 
-  private static estimateStudyTime(type: StudyType, content: any): number {
+  private static estimateStudyTime(type: StudyType, content: Record<string, unknown>): number {
     // Estimate study time in minutes based on type and content
     const baseTime = {
       flashcards: 1,

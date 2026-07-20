@@ -43,6 +43,14 @@ export function FileUpload({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const updateFileStatus = useCallback((id: string, status: UploadedFile['status'], progress: number, error?: string) => {
+    setUploadedFiles(prev => prev.map(file =>
+      file.id === id
+        ? { ...file, status, progress, error }
+        : file
+    ));
+  }, []);
+
   const acceptedTypes = {
     pdf: 'application/pdf',
     docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -180,13 +188,7 @@ export function FileUpload({
     poll();
   };
 
-  const updateFileStatus = (id: string, status: UploadedFile['status'], progress: number, error?: string) => {
-    setUploadedFiles(prev => prev.map(file =>
-      file.id === id
-        ? { ...file, status, progress, error }
-        : file
-    ));
-  };
+
 
   const removeFile = (id: string) => {
     setUploadedFiles(prev => prev.filter(file => file.id !== id));

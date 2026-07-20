@@ -84,7 +84,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                   <div className="p-4 text-sm text-center text-muted-foreground">Searching your brain...</div>
                 ) : searchResults?.length > 0 ? (
                   <div className="p-2 flex flex-col gap-1">
-                    {searchResults.map((result: any) => (
+                    {searchResults.map((result: { _id: string, title: string, type: string, snippet?: string, summary?: string, content?: string }) => (
                       <Link 
                         key={result._id} 
                         href={`/notes/${result._id}`}
@@ -163,7 +163,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                   <div className="p-4 text-sm text-center text-muted-foreground">Searching...</div>
                 ) : searchResults?.length > 0 ? (
                   <div className="p-2 flex flex-col gap-1">
-                    {searchResults.map((result: any) => (
+                    {searchResults.map((result: { _id: string, title: string, type: string, snippet?: string, summary?: string, content?: string }) => (
                       <Link 
                         key={result._id} 
                         href={`/notes/${result._id}`}

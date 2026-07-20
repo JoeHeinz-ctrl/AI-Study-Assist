@@ -3,14 +3,14 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface IStudySession extends Document {
   userId: mongoose.Types.ObjectId;
   title: string;
-  studyType: 'flashcards' | 'mcq' | 'short_answer' | 'long_answer' | 'fill_blanks' | 'true_false' | 'matching' | 'definitions' | 'concepts' | 'summary' | 'revision_sheet' | 'interview' | 'viva';
+  studyType: 'flashcards' | 'mcq' | 'short_answer' | 'long_answer' | 'fill_blanks' | 'true_false' | 'matching' | 'definitions' | 'concepts' | 'summary' | 'revision_sheet' | 'interview' | 'viva' | 'study_material' | 'quiz' | 'predictions';
   studyMode: 'beginner' | 'intermediate' | 'advanced' | 'exam_revision' | 'competitive_exam' | 'interview_prep';
   sourceDocuments: Array<{
     type: 'note' | 'document';
     id: mongoose.Types.ObjectId;
     title: string;
   }>;
-  generatedContent: any; // Flexible structure for different study materials
+  generatedContent: Record<string, unknown>; // Flexible structure for different study materials
   progress: {
     totalItems: number;
     completedItems: number;
@@ -45,7 +45,7 @@ const StudySessionSchema = new Schema<IStudySession>(
     studyType: { 
       type: String, 
       required: true,
-      enum: ['flashcards', 'mcq', 'short_answer', 'long_answer', 'fill_blanks', 'true_false', 'matching', 'definitions', 'concepts', 'summary', 'revision_sheet', 'interview', 'viva']
+      enum: ['flashcards', 'mcq', 'short_answer', 'long_answer', 'fill_blanks', 'true_false', 'matching', 'definitions', 'concepts', 'summary', 'revision_sheet', 'interview', 'viva', 'study_material', 'quiz', 'predictions']
     },
     studyMode: { 
       type: String, 
@@ -94,7 +94,10 @@ StudySessionSchema.index({ userId: 1, status: 1 });
 StudySessionSchema.index({ userId: 1, studyType: 1 });
 StudySessionSchema.index({ userId: 1, createdAt: -1 });
 
-const StudySession: Model<IStudySession> =
-  mongoose.models.StudySession || mongoose.model<IStudySession>('StudySession', StudySessionSchema);
+if (mongoose.models.StudySession) {
+  delete mongoose.models.StudySession;
+}
+
+const StudySession: Model<IStudySession> = mongoose.model<IStudySession>('StudySession', StudySessionSchema);
 
 export default StudySession;

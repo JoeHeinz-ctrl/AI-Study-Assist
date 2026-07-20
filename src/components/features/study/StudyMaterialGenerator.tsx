@@ -100,7 +100,7 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
 
   // Generate study material
   const generateMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: Record<string, unknown>) => {
       const res = await fetch('/api/study/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -166,8 +166,8 @@ export function StudyMaterialGenerator({ onGenerated }: StudyMaterialGeneratorPr
 
   const isLoading = isLoadingNotes || isLoadingDocuments;
   const allSources = [
-    ...(notes || []).map((note: any) => ({ id: note._id, type: 'note' as const, title: note.title })),
-    ...(documents?.documents || []).map((doc: any) => ({ id: doc._id, type: 'document' as const, title: doc.originalName }))
+    ...(notes || []).map((note: { _id: string, title: string }) => ({ id: note._id, type: 'note' as const, title: note.title })),
+    ...(documents?.documents || []).map((doc: { _id: string, originalName: string }) => ({ id: doc._id, type: 'document' as const, title: doc.originalName }))
   ];
 
   return (

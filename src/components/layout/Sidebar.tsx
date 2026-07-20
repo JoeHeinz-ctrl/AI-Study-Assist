@@ -10,7 +10,8 @@ import {
   MessageCircle,
   Settings, 
   PenTool,
-  X
+  X,
+  Brain
 } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
@@ -18,6 +19,7 @@ import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 const navItems = [
   { name: 'Notes', href: '/notes', icon: StickyNote },
   { name: 'Folders', href: '/folders', icon: FolderOpen },
+  { name: 'Study Hub', href: '/study-hub', icon: Brain },
   { name: 'Bookmarks', href: '/bookmarks', icon: Bookmark },
   { name: 'AI Chat', href: '/chat', icon: MessageCircle },
   { name: 'Settings', href: '/settings', icon: Settings },
