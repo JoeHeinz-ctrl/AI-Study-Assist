@@ -3,7 +3,9 @@ import { auth } from '@clerk/nextjs/server';
 import connectToDatabase from '@/lib/mongoose';
 import { getOrCreateUser } from '@/lib/getOrCreateUser';
 import Embedding from '@/models/Embedding';
+import Note from '@/models/Note';
 import { generateEmbedding } from '@/embeddings/gemini';
+import { RetrievalService } from '@/services/RetrievalService';
 import { generateChatResponse } from '@/ai/groq';
 
 export async function POST(req: Request) {
@@ -26,28 +28,44 @@ export async function POST(req: Request) {
     // Attempt RAG: generate embedding and find relevant chunks
     let contextChunks: string[] = [];
     try {
-      const queryVector = await generateEmbedding(latestUserMessage);
+      const searchResults = await RetrievalService.searchAllUserNotes(user._id.toString(), latestUserMessage, 5);
+      contextChunks = searchResults.map((res: any) => res.chunkText);
+    } catch (err) {
+      // Vector search may fail if index doesn't exist yet, or API is down
+      console.warn('RAG vector retrieval skipped:', err);
+    }
 
-      if (queryVector) {
-        const pipeline = [
-          {
-            $vectorSearch: {
-              index: 'vector_index',
-              path: 'embedding',
-              queryVector,
-              numCandidates: 50,
-              limit: 5,
-              filter: { userId: user._id }
+    // Always run text search to complement vector search (Hybrid Search)
+    // This ensures that exact keyword matches (like missing embeddings) are always found!
+    try {
+      const escapedQuery = latestUserMessage.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Extract meaningful keywords from the message to search for (very basic tokenization)
+      const keywords = latestUserMessage.split(/\s+/).filter((w: string) => w.length > 2).slice(0, 3);
+      const searchRegexes = keywords.map((kw: string) => new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
+      
+      if (searchRegexes.length > 0) {
+        const textResults = await Note.find({
+          userId: user._id,
+          $or: searchRegexes.map((regex: RegExp) => ({
+            $or: [
+              { title: { $regex: regex } },
+              { content: { $regex: regex } }
+            ]
+          }))
+        }).limit(3).lean();
+
+        for (const note of textResults) {
+          if (note.content) {
+            const chunkString = `[Note Title: ${note.title}]\n${note.content.substring(0, 1500)}`;
+            // Only add if not already in context chunks (prevent exact duplicates, though unlikely)
+            if (!contextChunks.includes(chunkString)) {
+              contextChunks.push(chunkString);
             }
           }
-        ];
-
-        const searchResults = await Embedding.aggregate(pipeline);
-        contextChunks = searchResults.map((res: any) => res.chunkText);
+        }
       }
-    } catch (err) {
-      // Vector search may fail if index doesn't exist yet — that's fine, we fall back to plain chat
-      console.warn('RAG context retrieval skipped (index may not exist yet):', err);
+    } catch (fallbackErr) {
+      console.error('Hybrid text search failed:', fallbackErr);
     }
 
     // Generate the AI response with or without context

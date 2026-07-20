@@ -44,6 +44,31 @@ export class RetrievalService {
   }
   
   /**
+   * Retrieves relevant note chunks across all of a user's notes.
+   */
+  static async searchAllUserNotes(userId: string, query: string, limit: number = 5) {
+    const queryEmbedding = await generateEmbedding(query);
+    if (!queryEmbedding) {
+      throw new Error('Failed to generate query embedding');
+    }
+
+    const embeddings = await Embedding.find({
+      userId: new mongoose.Types.ObjectId(userId)
+    }).lean();
+
+    if (embeddings.length === 0) return [];
+
+    const results = embeddings.map(emb => ({
+      ...emb,
+      similarity: cosineSimilarity(queryEmbedding, emb.embedding)
+    }));
+
+    results.sort((a, b) => b.similarity - a.similarity);
+    
+    return results.slice(0, limit);
+  }
+  
+  /**
    * Gets all chunks for given notes.
    */
   static async getAllChunksForNotes(userId: string, noteIds: string[]) {
